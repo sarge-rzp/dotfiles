@@ -1,0 +1,11 @@
+onboarding = false
+
+[ui.toast]
+delivery = "herdr"
+
+[ui]
+status_indicators = "symbols"
+
+[theme]
+name = "rose-pine"
+auto_switch = false
