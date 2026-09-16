@@ -1,0 +1,8 @@
+result
+planning/
+
+# herdr writes runtime state beside its config; only config.toml is authored.
+home/.config/herdr/*.log
+home/.config/herdr/*.sock
+home/.config/herdr/session.json
+home/.config/herdr/.plugins.lock
