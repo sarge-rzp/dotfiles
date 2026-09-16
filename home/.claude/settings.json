@@ -1,0 +1,319 @@
+{
+  "permissions": {
+    "defaultMode": "auto"
+  },
+  "model": "opus[1m]",
+  "disableClaudeAiConnectors": true,
+  "skillOverrides": {
+    "agent-readiness-score": "off",
+    "agent-studio-pr-review": "off",
+    "api-decomp": "off",
+    "api-flow": "off",
+    "config-diff": "off",
+    "context-orchestrator": "off",
+    "coralogix-logs": "off",
+    "create-dependency-ticket": "off",
+    "db-network-optimizer": "off",
+    "devstack-golang-hot-reload": "off",
+    "e2e-local-cli": "off",
+    "e2e-test-generator": "off",
+    "fe-unit-test-generator": "off",
+    "generate-playwright-e2e": "off",
+    "generating-repo-doc": "off",
+    "go-code-review": "off",
+    "go-code-reviewer": "off",
+    "go-docker-build-audit": "off",
+    "go-docker-build-optimize": "off",
+    "go-unit-test-generator": "off",
+    "go-unit-test-generator-ci-fix": "off",
+    "mermaid-mindmap": "off",
+    "pr-autopilot": "off",
+    "python-code-review": "off",
+    "qa-skills": "off",
+    "refactor-guru": "off",
+    "swe-agent": "off"
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "rtk hook claude"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"/Users/sarthak.j/src/slash-cli/slash-hooks/capture.sh\" PreToolUse || true",
+            "timeout": 2
+          }
+        ]
+      },
+      {
+        "matcher": "Skill",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"/Users/sarthak.j/src/slash-cli/slash-hooks/skill-precedence.sh\" || true",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"/Users/sarthak.j/src/slash-cli/slash-hooks/capture.sh\" SessionStart || true",
+            "timeout": 2
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"/Users/sarthak.j/src/slash-cli/slash-hooks/mandatory-skills.sh\" || true",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"/Users/sarthak.j/src/slash-cli/slash-hooks/auto-update.sh\" || true",
+            "timeout": 2
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"/Users/sarthak.j/src/slash-cli/slash-hooks/route.sh\" || true",
+            "timeout": 2
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"/Users/sarthak.j/src/slash-cli/slash-hooks/loop-gate.sh\" || true",
+            "timeout": 15
+          }
+        ]
+      },
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash '/Users/sarthak.j/.claude/hooks/herdr-agent-state.sh' session",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"/Users/sarthak.j/src/slash-cli/slash-hooks/capture.sh\" UserPromptSubmit || true",
+            "timeout": 4
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"/Users/sarthak.j/src/slash-cli/slash-hooks/loop-select.sh\" || true",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "UserPromptExpansion": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"/Users/sarthak.j/src/slash-cli/slash-hooks/engram-inject.sh\" || true",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"/Users/sarthak.j/src/slash-cli/slash-hooks/engram-feedback-reminder.sh\" || true",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"/Users/sarthak.j/src/slash-cli/slash-hooks/loop-gate.sh\" || true",
+            "timeout": 15
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"/Users/sarthak.j/src/slash-cli/slash-hooks/capture.sh\" PostToolUse || true",
+            "timeout": 2
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"/Users/sarthak.j/src/slash-cli/slash-hooks/guardrails.sh\" PostToolUse || true",
+            "timeout": 2
+          }
+        ]
+      },
+      {
+        "matcher": "Skill",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"/Users/sarthak.j/src/slash-cli/slash-hooks/engram-skill-inject.sh\" || true",
+            "timeout": 15
+          }
+        ]
+      },
+      {
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"/Users/sarthak.j/src/slash-cli/slash-hooks/artifact-contract.sh\" || true",
+            "timeout": 2
+          }
+        ]
+      }
+    ],
+    "SubagentStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"/Users/sarthak.j/src/slash-cli/slash-hooks/capture.sh\" SubagentStart || true",
+            "timeout": 2
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"/Users/sarthak.j/src/slash-cli/slash-hooks/capture.sh\" SubagentStop || true",
+            "timeout": 2
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"/Users/sarthak.j/src/slash-cli/slash-hooks/capture.sh\" PreCompact || true",
+            "timeout": 2
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"/Users/sarthak.j/src/slash-cli/slash-hooks/capture.sh\" SessionEnd || true",
+            "timeout": 2
+          }
+        ]
+      }
+    ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "bash \"$HOME/.claude/statusline-command.sh\""
+  },
+  "enabledPlugins": {
+    "caveman@caveman": true,
+    "superpowers@claude-plugins-official": true,
+    "code-review@claude-plugins-official": false,
+    "skill-creator@claude-plugins-official": true,
+    "claude-md-management@claude-plugins-official": false,
+    "playwright@claude-plugins-official": false,
+    "security-guidance@claude-plugins-official": false,
+    "commit-commands@claude-plugins-official": false,
+    "pr-review-toolkit@claude-plugins-official": false,
+    "slack@claude-plugins-official": false,
+    "mcp-server-dev@claude-plugins-official": false,
+    "redis-development@claude-plugins-official": false,
+    "tech-spec-generator@razorpay-marketplace": false,
+    "agent-ready@razorpay-marketplace": false,
+    "ai-doctor@razorpay-marketplace": false,
+    "backend-engineer@razorpay-marketplace": false,
+    "code-review@razorpay-marketplace": true,
+    "compass@razorpay-marketplace": true,
+    "deployment-premortem@razorpay-marketplace": false,
+    "fe-agent-ready@razorpay-marketplace": false,
+    "frontend-engineer@razorpay-marketplace": true,
+    "infra-investigator@razorpay-marketplace": false,
+    "infra-knowledge@razorpay-marketplace": false,
+    "quality-engineer@razorpay-marketplace": false,
+    "quality-fe-agent@razorpay-marketplace": false,
+    "self-review@razorpay-marketplace": false,
+    "skill-connector@razorpay-marketplace": false,
+    "slit-generator-v2@razorpay-marketplace": false,
+    "rzp-discover@razorpay-marketplace": true,
+    "github@claude-plugins-official": true,
+    "redash@razorpay-marketplace": true,
+    "warp@claude-code-warp": true
+  },
+  "extraKnownMarketplaces": {
+    "caveman": {
+      "source": {
+        "source": "github",
+        "repo": "JuliusBrussee/caveman"
+      }
+    },
+    "razorpay-marketplace": {
+      "source": {
+        "source": "git",
+        "url": "git@github.com:razorpay/claude-plugins.git"
+      }
+    },
+    "claude-code-warp": {
+      "source": {
+        "source": "github",
+        "repo": "warpdotdev/claude-code-warp"
+      }
+    }
+  },
+  "theme": "dark"
+}
