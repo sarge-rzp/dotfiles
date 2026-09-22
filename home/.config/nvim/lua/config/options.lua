@@ -57,6 +57,18 @@ vim.diagnostic.config({
 -- Toggle it per-buffer with <leader>uf, globally with <leader>uF.
 vim.g.autoformat = true
 
+-- ── Mason's bin dir on PATH, before any plugin spawns a tool ───────────
+-- mason.nvim prepends this itself, but it is lazy-loaded on `:Mason`, so
+-- anything that shells out earlier (notably `:TSUpdate` calling `tree-sitter`)
+-- fails with ENOENT. Doing it here makes mason-installed tools resolvable from
+-- the moment Neovim starts.
+do
+  local mason_bin = vim.fn.stdpath("data") .. "/mason/bin"
+  if vim.uv.fs_stat(mason_bin) then
+    vim.env.PATH = mason_bin .. ":" .. vim.env.PATH
+  end
+end
+
 -- ── LazyVim feature switches ──────────────────────────────────────────────
 vim.g.lazyvim_picker = "snacks" -- file/grep picker engine
 vim.g.lazyvim_cmp = "blink.cmp" -- completion engine (fast, Rust-backed)
