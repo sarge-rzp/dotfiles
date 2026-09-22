@@ -6,3 +6,6 @@ home/.config/herdr/*.log
 home/.config/herdr/*.sock
 home/.config/herdr/session.json
 home/.config/herdr/.plugins.lock
+
+# Local nix-darwin rebuild helper; kept on disk, not tracked.
+rebuild.sh
