@@ -42,6 +42,18 @@
   # this be declared independently of the mount: launchd blocks until
   # darwin-store has brought /nix up, rather than failing on a missing binary.
   #
+  # This block is a TRIGGER as much as a definition, and the file it installs
+  # is not the one that ends up on disk. nix-darwin's "Restore unmanaged Nix
+  # daemon" step (see `activate`, near the end of the launchd section) copies
+  # the profile's own plist over whatever is at
+  # /Library/LaunchDaemons/org.nixos.nix-daemon.plist -- but only when
+  # /run/current-system already declares that daemon. With nix.enable = false
+  # and no block here, that condition is never met and the restore never runs,
+  # which is why a deleted nix-daemon plist previously stayed deleted. The two
+  # plists are behaviourally identical (verified by comparing parsed plists),
+  # so the overwrite is harmless; removing this block would silently switch the
+  # restore back off.
+  #
   # Conflicts with `nix.enable = true` -- nix-darwin defines this daemon itself
   # in that mode, so remove this block if that flag is ever flipped.
   launchd.daemons.nix-daemon = {
