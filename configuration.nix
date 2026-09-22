@@ -2,7 +2,63 @@
 
 {
   # Determinate already manages the Nix daemon, so nix-darwin shouldn't.
+  # NOTE: Determinate is not actually installed on this machine (no
+  # determinate-nixd, no /etc/nix/nix.custom.conf, and /etc/nix/nix.conf is the
+  # plain upstream one). So nothing owns the Nix daemon, which is why
+  # org.nixos.nix-daemon.plist had to be restored by hand. Revisit: flipping
+  # this to true hands nix-darwin /etc/nix/nix.conf, which currently carries
+  # `ssl-cert-file = /etc/nix/ca-bundle.pem` for Zscaler TLS interception. That
+  # line must be preserved via nix.settings or every download breaks.
   nix.enable = false;
+
+  # Mounts the encrypted Nix Store volume at /nix on boot. Without it the
+  # system mounts the volume at /Volumes/Nix Store instead, /nix stays empty,
+  # and every symlink into the store dangles -- including /etc/static/zshrc,
+  # which leaves the login shell with a bare PATH and no working `nix`.
+  #
+  # The script text is inlined rather than referenced as a store path on
+  # purpose: this daemon is what makes /nix available, so a ${./script}
+  # reference would not exist at the moment it needs to run. See the header of
+  # scripts/nix-mount-store.sh for the full mechanism.
+  launchd.daemons.darwin-store = {
+    serviceConfig = {
+      Label = "org.nixos.darwin-store";
+      RunAtLoad = true;
+      ProgramArguments = [
+        "/bin/bash"
+        "-c"
+        (builtins.readFile ./scripts/nix-mount-store.sh)
+      ];
+    };
+  };
+
+  # The Nix daemon itself. The upstream installer drops this plist into
+  # /Library/LaunchDaemons, but nothing puts it back if it is removed -- which
+  # is how this machine ended up with a mounted store and no working `nix`.
+  # Declaring it here means a rebuild restores it.
+  #
+  # Mirrors the plist shipped in the nix package at
+  # /nix/var/nix/profiles/default/Library/LaunchDaemons. wait4path is what lets
+  # this be declared independently of the mount: launchd blocks until
+  # darwin-store has brought /nix up, rather than failing on a missing binary.
+  #
+  # Conflicts with `nix.enable = true` -- nix-darwin defines this daemon itself
+  # in that mode, so remove this block if that flag is ever flipped.
+  launchd.daemons.nix-daemon = {
+    serviceConfig = {
+      Label = "org.nixos.nix-daemon";
+      RunAtLoad = true;
+      KeepAlive = true;
+      ProgramArguments = [
+        "/bin/sh"
+        "-c"
+        "/bin/wait4path /nix/var/nix/profiles/default/bin/nix-daemon && exec /nix/var/nix/profiles/default/bin/nix-daemon"
+      ];
+      StandardErrorPath = "/var/log/nix-daemon.log";
+      StandardOutPath = "/dev/null";
+      SoftResourceLimits.NumberOfFiles = 1048576;
+    };
+  };
 
   nixpkgs.config.allowUnfree = true;
   nixpkgs.hostPlatform = "aarch64-darwin"; # use x86_64-darwin for Intel CPU
