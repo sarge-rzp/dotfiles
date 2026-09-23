@@ -6,9 +6,8 @@
   # determinate-nixd, no /etc/nix/nix.custom.conf, and /etc/nix/nix.conf is the
   # plain upstream one). So nothing owns the Nix daemon, which is why
   # org.nixos.nix-daemon.plist had to be restored by hand. Revisit: flipping
-  # this to true hands nix-darwin /etc/nix/nix.conf, which currently carries
-  # `ssl-cert-file = /etc/nix/ca-bundle.pem` for Zscaler TLS interception. That
-  # line must be preserved via nix.settings or every download breaks.
+  # this to true hands nix-darwin /etc/nix/nix.conf, so any hand-written
+  # settings in that file need porting to nix.settings first.
   nix.enable = false;
 
   # Mounts the encrypted Nix Store volume at /nix on boot. Without it the
