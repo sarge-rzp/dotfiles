@@ -34,11 +34,6 @@ require("lazy").setup({
   -- No plugin in this spec uses `build = "rockspec"`, so luarocks/hererocks
   -- is dead weight and only shows up as a false ERROR in `:checkhealth lazy`.
   rocks = { enabled = false },
-  -- Corporate network throttles bursts of SSH handshakes, and the gitconfig
-  -- `insteadOf` rule rewrites lazy's https:// plugin URLs to git@github.com.
-  -- Default concurrency (cores*2) makes most fetches fail; 4 fits inside the
-  -- multiplexed connection's session limit (see ~/.ssh/config).
-  concurrency = 4,
   checker = {
     enabled = true, -- check for plugin updates periodically
     notify = false, -- notify on update
